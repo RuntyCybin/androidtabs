@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 public class TestFragment2 extends Fragment {
     Bitmap myBitmap = null;
+    ImageView imageView;
     public static TestFragment2 newInstance(String rutaImagen) {
         TestFragment2 testFragment2 = new TestFragment2();
         Bundle bundle = new Bundle();
@@ -35,8 +36,8 @@ public class TestFragment2 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment2, container, false);
-        GetBitmap(getArguments().getString("ruta")); // recogemos la ruta y la asignamos a la variable bitmap
-        ((ImageView) view.findViewById(R.id.fragimg)).setImageBitmap(myBitmap); // setamos el bitmap
+        GetBitmap(getArguments().getString("ruta"), view); // recogemos la ruta y la asignamos a la variable bitmap
+
 
         return view;
     }
@@ -59,13 +60,14 @@ public class TestFragment2 extends Fragment {
 
 
     // RECOGEMOS LAS EMPRESAS Y LOS AGENTES SEGUN LA FECHA DE LA ULTIMA SINCRONIZACION
-    public void GetBitmap(final String src) {
+    public void GetBitmap(final String src, final View view) {
         new AsyncTask<Void, Integer, Void>() {
 
 
             @Override
             protected void onPreExecute() {
 
+                System.out.println("RUTA: " + src);
             }
             @Override
             protected Void doInBackground(Void... arg0) {
@@ -78,14 +80,14 @@ public class TestFragment2 extends Fragment {
                     InputStream input = connection.getInputStream();
                     myBitmap = BitmapFactory.decodeStream(input);
                 } catch (IOException e) {
-                    // Log exception
+                    System.out.println("ERROR: " + e);
                     return null;
                 }
                 return null;
             }
             @Override
             protected void onPostExecute(Void result) {
-
+                ((ImageView) view.findViewById(R.id.fragimg)).setImageBitmap(myBitmap); // setamos el bitmap
             }
         }.execute();
     }
